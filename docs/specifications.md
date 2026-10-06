@@ -177,7 +177,7 @@ Préfixe : `/api/v1`. Tous les endpoints, sauf l'authentification et `/health`, 
 ### Stack
 
 - Python 3.12+, FastAPI, Pydantic v2
-- PostgreSQL 16, SQLAlchemy 2, Alembic pour les migrations
+- PostgreSQL 17 (image Docker `postgres:17`), SQLAlchemy 2, Alembic pour les migrations
 - PyJWT pour les tokens, argon2-cffi pour le hachage
 - Docker et Docker Compose pour l'environnement local
 
