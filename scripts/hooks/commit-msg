@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Validate the commit message header against Conventional Commits.
+set -euo pipefail
+
+types='feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert'
+pattern="^(${types})(\([a-z0-9-]+\))?!?: [^[:space:]].*$"
+max_length=100
+
+# First non-empty, non-comment line, CR stripped (Windows editors).
+header="$(sed -e 's/\r$//' -e '/^#/d' -e '/^[[:space:]]*$/d' -e q "$1")"
+
+case "$header" in
+  "Merge "* | "fixup! "* | "squash! "* | "amend! "*) exit 0 ;;
+esac
+
+if [[ ! "$header" =~ $pattern ]]; then
+  echo "Message de commit invalide : « $header »" >&2
+  echo "Format attendu : type(scope): description  (types : ${types//|/, })" >&2
+  exit 1
+fi
+if [ "${#header}" -gt "$max_length" ]; then
+  echo "En-tête trop long (${#header} > ${max_length} caractères)." >&2
+  exit 1
+fi
