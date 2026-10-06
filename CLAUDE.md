@@ -94,6 +94,9 @@ Approche basée sur la documentation FastAPI (« Handling Errors ») : `HTTPExce
 ## Commandes
 
 ```bash
+uv sync                                  # installer les dépendances (.venv)
+git config core.hooksPath scripts/hooks  # activer le hook commit-msg (une fois par clone)
+./scripts/check_commits.sh [base]        # valider les messages de commit de base..HEAD
 ./scripts/lint.sh          # Ruff + mypy
 ./scripts/test.sh          # pytest avec couverture
 docker compose up -d       # API + PostgreSQL en local
