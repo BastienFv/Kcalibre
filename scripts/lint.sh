@@ -2,6 +2,8 @@
 # Check formatting, lint and static typing. Never modifies files.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+# Fail instead of rewriting uv.lock when it is out of date.
+export UV_LOCKED=1
 
 uv run ruff format --check .
 uv run ruff check .

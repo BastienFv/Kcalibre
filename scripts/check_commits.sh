@@ -12,6 +12,9 @@ fi
 tmp="$(mktemp)"
 trap 'rm -f "$tmp"' EXIT
 
+# Collected first so that a git rev-list failure stops the script (set -e).
+shas="$(git rev-list --no-merges --reverse "$base..HEAD")"
+
 count=0
 failures=0
 while read -r sha; do
@@ -26,14 +29,21 @@ while read -r sha; do
       failures=$((failures + 1))
       continue
       ;;
+    # Real merges are excluded by --no-merges: this is a regular commit.
+    "Merge "*)
+      echo "KO $short $header (message de fusion sur un commit ordinaire)"
+      failures=$((failures + 1))
+      continue
+      ;;
   esac
-  if bash scripts/hooks/commit-msg "$tmp" > /dev/null 2>&1; then
+  if reason="$(bash scripts/hooks/commit-msg "$tmp" 2>&1 > /dev/null)"; then
     echo "OK $short $header"
   else
     echo "KO $short $header"
+    sed 's/^/   /' <<< "$reason"
     failures=$((failures + 1))
   fi
-done < <(git rev-list --no-merges --reverse "$base..HEAD")
+done <<< "$shas"
 
 if [ "$count" -eq 0 ]; then
   echo "Aucun commit à vérifier ($base..HEAD)."
