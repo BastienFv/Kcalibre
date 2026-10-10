@@ -5,6 +5,7 @@ description = "API REST de suivi nutritionnel"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "six",
     "alembic>=1.20.0",
     "argon2-cffi>=25.1.0",
     "fastapi>=0.142.2",
